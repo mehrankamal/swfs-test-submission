@@ -105,7 +105,13 @@ public class TransactionDataFetcher {
      * Returns the identifiers of all open compliance issues
      */
     public Set<Integer> getUnsolvedIssueIds() {
-        throw new UnsupportedOperationException();
+        Set<Integer> openComplianceIssueIds = new HashSet<>();
+
+        repository.getAll().stream()
+                .filter(transaction -> !transaction.getIssueSolved())
+                .forEach(transaction -> openComplianceIssueIds.add(transaction.getIssueId()));
+
+        return openComplianceIssueIds;
     }
 
     /**
