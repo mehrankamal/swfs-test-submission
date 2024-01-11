@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.lang.System.in;
-
 public class SmallWorldApplication {
 
     private static void printApplicationIntroduction(String transactionsSource) {
@@ -25,8 +23,15 @@ public class SmallWorldApplication {
         System.out.println("Total Transaction Amount Sent by \"Tom Shelby\": " + transactionDataFetcher.getTotalTransactionAmountSentBy("Tom Shelby"));
         System.out.println("Max Transaction Amount: " + transactionDataFetcher.getMaxTransactionAmount());
         System.out.println("Number of Unique Clients: " + transactionDataFetcher.countUniqueClients());
-        System.out.println("Does \"Aunt Polly\" have transactionw with open compliance issues? " + transactionDataFetcher.hasOpenComplianceIssues("Aunt Polly"));
+        System.out.println("Does \"Aunt Polly\" have transactions with open compliance issues? " + transactionDataFetcher.hasOpenComplianceIssues("Aunt Polly"));
+        printTransactionsByBeneficiaries(transactionDataFetcher);
+        System.out.println("Unresolved issue Ids: " + String.join(",", transactionDataFetcher.getUnsolvedIssueIds().stream().map(Object::toString).toList()));
+        printIssueSolvedMessages(transactionDataFetcher);
+        printTop3Transactions(transactionDataFetcher);
+        System.out.println("Sender with highest total sent amount: " + transactionDataFetcher.getTopSender());
+    }
 
+    private static void printTransactionsByBeneficiaries(TransactionDataFetcher transactionDataFetcher) {
         Map<String, List<Transaction>> allTransactions = transactionDataFetcher.getTransactionsByBeneficiaryName();
         System.out.println("All transactions indexed by beneficiary name: ");
         System.out.println("-----------------------------------------------------------");
@@ -38,10 +43,9 @@ public class SmallWorldApplication {
             }
         }
         System.out.println("-----------------------------------------------------------");
+    }
 
-
-        System.out.println("Unresolved issue Ids: " + String.join(",", transactionDataFetcher.getUnsolvedIssueIds().stream().map(Object::toString).toList()));
-
+    private static void printIssueSolvedMessages(TransactionDataFetcher transactionDataFetcher) {
         System.out.println("Solved issue messages: ");
         List<String> solvedIssueMessages = transactionDataFetcher.getAllSolvedIssueMessages();
         System.out.println("-----------------------------------------------------------");
@@ -49,7 +53,9 @@ public class SmallWorldApplication {
             System.out.println(message);
         }
         System.out.println("-----------------------------------------------------------");
+    }
 
+    private static void printTop3Transactions(TransactionDataFetcher transactionDataFetcher) {
         System.out.println("Top 3 transactions by amount: ");
         List<Transaction> top3Transactions = transactionDataFetcher.getTop3TransactionsByAmount();
         System.out.println("-----------------------------------------------------------");
@@ -57,9 +63,6 @@ public class SmallWorldApplication {
             System.out.println("Amount: " + transaction.getAmount() + ", Transaction: " + transaction);
         }
         System.out.println("-----------------------------------------------------------");
-
-
-        System.out.println("Sender with highest total sent amount: " + transactionDataFetcher.getTopSender());
     }
 
     public static void main(String[] args) throws Exception {
