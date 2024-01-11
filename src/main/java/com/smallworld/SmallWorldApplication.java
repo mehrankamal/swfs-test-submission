@@ -20,15 +20,7 @@ public class SmallWorldApplication {
         System.out.println("-----------------------------------------------------------");
     }
 
-    public static void main(String[] args) throws Exception {
-        Properties properties = Config.loadConfig();
-        String transactionsSource = (String) properties.get("smallworld.transactions-source");
-
-        TransactionJsonRepository transactionJsonRepository = new TransactionJsonRepository(transactionsSource);
-        TransactionDataFetcher transactionDataFetcher = new TransactionDataFetcher(transactionJsonRepository);
-
-        printApplicationIntroduction(transactionsSource);
-
+    private static void printApplicationExecution(TransactionDataFetcher transactionDataFetcher) {
         System.out.println("Total Sum of Transactions: " + transactionDataFetcher.getTotalTransactionAmount());
         System.out.println("Total Transaction Amount Sent by \"Tom Shelby\": " + transactionDataFetcher.getTotalTransactionAmountSentBy("Tom Shelby"));
         System.out.println("Max Transaction Amount: " + transactionDataFetcher.getMaxTransactionAmount());
@@ -68,5 +60,16 @@ public class SmallWorldApplication {
 
 
         System.out.println("Sender with highest total sent amount: " + transactionDataFetcher.getTopSender());
+    }
+
+    public static void main(String[] args) throws Exception {
+        Properties properties = Config.loadConfig();
+        String transactionsSource = (String) properties.get("smallworld.transactions-source");
+
+        TransactionJsonRepository transactionJsonRepository = new TransactionJsonRepository(transactionsSource);
+        TransactionDataFetcher transactionDataFetcher = new TransactionDataFetcher(transactionJsonRepository);
+
+        printApplicationIntroduction(transactionsSource);
+        printApplicationExecution(transactionDataFetcher);
     }
 }
