@@ -82,8 +82,23 @@ public class TransactionDataFetcher {
     /**
      * Returns all transactions indexed by beneficiary name
      */
-    public Map<String, Object> getTransactionsByBeneficiaryName() {
-        throw new UnsupportedOperationException();
+    public Map<String, ArrayList<Transaction>> getTransactionsByBeneficiaryName() {
+        Map<String, ArrayList<Transaction>> beneficiaryToTransactionsMap = new HashMap<>();
+
+        repository.getAll().forEach(
+                transaction -> {
+                    String beneficiaryName = transaction.getBeneficiaryFullName();
+                    if(beneficiaryToTransactionsMap.containsKey(beneficiaryName)) {
+                        beneficiaryToTransactionsMap.get(beneficiaryName).add(transaction);
+                    } else {
+                        ArrayList<Transaction> beneficiaryTransactions = new ArrayList<>();
+                        beneficiaryTransactions.add(transaction);
+                        beneficiaryToTransactionsMap.put(beneficiaryName, beneficiaryTransactions);
+                    }
+                }
+        );
+
+        return beneficiaryToTransactionsMap;
     }
 
     /**

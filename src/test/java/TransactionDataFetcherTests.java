@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class TransactionDataFetcherTests {
@@ -112,5 +113,33 @@ public class TransactionDataFetcherTests {
         Assert.assertTrue(transactionDataFetcher.hasOpenComplianceIssues("Mehran Kamal")); // Sender Case
         Assert.assertTrue(transactionDataFetcher.hasOpenComplianceIssues("Ali")); // Beneficiary Case
         Assert.assertFalse(transactionDataFetcher.hasOpenComplianceIssues("Hamza")); // No open issue client
+    }
+
+    @Test
+    public void testGetTransactionsByBeneficiaryName() {
+        ArrayList<Transaction> mehransTransactions = new ArrayList<>();
+        mehransTransactions.add(new Transaction(1, BigDecimal.ONE, "Mehran", 20, "Mehran", 20, null, true, null));
+
+        ArrayList<Transaction> alisTransactions = new ArrayList<>();
+        alisTransactions.add(new Transaction(1, BigDecimal.ONE, "Mehran", 20, "Ali", 20, null, true, null));
+
+
+        ArrayList<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(mehransTransactions);
+        allTransactions.addAll(alisTransactions);
+
+        Mockito.when(transactionRepository.getAll()).thenReturn(allTransactions);
+
+        Map<String, ArrayList<Transaction>> result = transactionDataFetcher.getTransactionsByBeneficiaryName();
+
+        Assert.assertEquals(2, result.size());
+        Assert.assertTrue(result.containsKey("Mehran"));
+        Assert.assertTrue(result.containsKey("Ali"));
+
+        Assert.assertEquals(1, result.get("Mehran").size());
+        Assert.assertEquals(1, result.get("Ali").size());
+
+        Assert.assertEquals(mehransTransactions.get(0), result.get("Mehran").get(0));
+        Assert.assertEquals(alisTransactions.get(0), result.get("Ali").get(0));
     }
 }
