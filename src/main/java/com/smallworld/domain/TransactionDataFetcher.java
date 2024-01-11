@@ -55,8 +55,17 @@ public class TransactionDataFetcher {
     /**
      * Counts the number of unique clients that sent or received a transaction
      */
-    public long countUniqueClients() {
-        throw new UnsupportedOperationException();
+    public Long countUniqueClients() {
+        Set<String> clientNames = new HashSet<>();
+
+        repository.getAll().forEach(
+                transaction -> {
+                    clientNames.add(transaction.getSenderFullName());
+                    clientNames.add(transaction.getBeneficiaryFullName());
+                }
+        );
+
+        return (long) clientNames.size();
     }
 
     /**

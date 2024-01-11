@@ -77,4 +77,27 @@ public class TransactionDataFetcherTests {
 
         Assert.assertThrows(NoSuchElementException.class, transactionDataFetcher::getMaxTransactionAmount);
     }
+
+    @Test
+    public void testCountUniqueClients_DifferentClients() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Ali Khan", 20, null, false, null));
+        transactions.add(new Transaction(1, BigDecimal.TEN, "Ali Khan", 20, "Ali Khan", 20, null, false, null));
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        Long totalClients = transactionDataFetcher.countUniqueClients();
+        Assert.assertEquals(Long.valueOf(2), totalClients);
+    }
+
+    @Test
+    public void testCountUniqueClients_SameClient() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Mehran Kamal", 20, null, false, null));
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        Long totalClients = transactionDataFetcher.countUniqueClients();
+        Assert.assertEquals(Long.valueOf(1), totalClients);
+    }
 }
