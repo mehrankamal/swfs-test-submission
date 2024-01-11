@@ -18,4 +18,8 @@ public class Transaction {
     private Integer issueId;
     private Boolean issueSolved;
     private String issueMessage;
+
+    public BigDecimal sortingDescAmount() {
+        return amount.multiply(BigDecimal.valueOf(-1));
+    }
 }
