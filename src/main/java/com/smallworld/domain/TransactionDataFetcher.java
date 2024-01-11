@@ -1,5 +1,9 @@
-package com.smallworld;
+package com.smallworld.domain;
 
+import com.smallworld.data.TransactionRepository;
+import com.smallworld.domain.entities.Transaction;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,11 +11,19 @@ import java.util.Set;
 
 public class TransactionDataFetcher {
 
+    private final TransactionRepository repository;
+
+    public TransactionDataFetcher(TransactionRepository repository){
+        this.repository = repository;
+    }
+
     /**
      * Returns the sum of the amounts of all transactions
      */
-    public double getTotalTransactionAmount() {
-        throw new UnsupportedOperationException();
+    public BigDecimal getTotalTransactionAmount() {
+        return repository.getAll().stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
