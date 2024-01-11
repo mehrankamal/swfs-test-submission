@@ -121,8 +121,22 @@ public class TransactionDataFetcher {
     /**
      * Returns the sender with the most total sent amount
      */
-    public Optional<Object> getTopSender() {
-        throw new UnsupportedOperationException();
+    public String getTopSender() {
+        Map<String, List<Transaction>> senderTransactionsMap = repository.getAll().stream()
+                .collect(Collectors.groupingBy(Transaction::getSenderFullName));
+
+        Map<String, BigDecimal> senderTotalAmountMap = senderTransactionsMap.entrySet().stream().collect(
+                Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue()
+                                .stream()
+                                .map(Transaction::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                )
+        );
+
+        return senderTotalAmountMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue()).get().getKey();
     }
 
 }
