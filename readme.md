@@ -5,7 +5,7 @@ To implement the `com.smallworld.domain.TransactionDataFetcher` class correctly,
 
 ## Approach:
 
-I follow a TDD approach to implement the specification defined in the given class following a layered approach.
+I follow a TDD approach to implement the specification defined in the given class following a layered approach. I have also used the `BigDecimal` implementation of Java instead of the primitive `double` to make the calculations stable and less prone to rounding errors.
 
 ## Architecture:
 
