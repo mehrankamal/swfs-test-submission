@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class TransactionDataFetcherTests {
 
@@ -55,5 +56,25 @@ public class TransactionDataFetcherTests {
 
         BigDecimal totalAmountNonPresentSender = transactionDataFetcher.getTotalTransactionAmountSentBy("Ali Khan");
         Assert.assertEquals(0, totalAmountNonPresentSender.compareTo(BigDecimal.TEN));
+    }
+
+    @Test
+    public void testGetMaxTransactionAmount_TransactionsPresent() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Ali Khan", 20, null, false, null));
+        transactions.add(new Transaction(1, BigDecimal.TEN, "Ali Khan", 20, "Ali Khan", 20, null, false, null));
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        BigDecimal maxTransactionAmount = transactionDataFetcher.getMaxTransactionAmount();
+        Assert.assertEquals(0, maxTransactionAmount.compareTo(BigDecimal.TEN));
+    }
+
+    @Test
+    public void testGetMaxTransactionAmount_NoTransactionsPresent() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        Assert.assertThrows(NoSuchElementException.class, transactionDataFetcher::getMaxTransactionAmount);
     }
 }

@@ -4,10 +4,7 @@ import com.smallworld.data.TransactionRepository;
 import com.smallworld.domain.entities.Transaction;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class TransactionDataFetcher {
@@ -46,8 +43,13 @@ public class TransactionDataFetcher {
     /**
      * Returns the highest transaction amount
      */
-    public double getMaxTransactionAmount() {
-        throw new UnsupportedOperationException();
+    public BigDecimal getMaxTransactionAmount() throws NoSuchElementException {
+        return repository
+                .getAll()
+                .stream()
+                .map(Transaction::getAmount)
+                .max(BigDecimal::compareTo)
+                .orElseThrow();
     }
 
     /**
