@@ -100,4 +100,17 @@ public class TransactionDataFetcherTests {
         Long totalClients = transactionDataFetcher.countUniqueClients();
         Assert.assertEquals(Long.valueOf(1), totalClients);
     }
+
+    @Test
+    public void testHasOpenComplianceIssues() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Ali", 20, 32, false, "Looks like fraud"));
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Hamza", 20, "Mehran", 20, null, true, null));
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        Assert.assertTrue(transactionDataFetcher.hasOpenComplianceIssues("Mehran Kamal")); // Sender Case
+        Assert.assertTrue(transactionDataFetcher.hasOpenComplianceIssues("Ali")); // Beneficiary Case
+        Assert.assertFalse(transactionDataFetcher.hasOpenComplianceIssues("Hamza")); // No open issue client
+    }
 }

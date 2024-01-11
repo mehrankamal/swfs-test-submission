@@ -72,8 +72,11 @@ public class TransactionDataFetcher {
      * Returns whether a client (sender or beneficiary) has at least one transaction with a compliance
      * issue that has not been solved
      */
-    public boolean hasOpenComplianceIssues(String clientFullName) {
-        throw new UnsupportedOperationException();
+    public Boolean hasOpenComplianceIssues(String clientFullName) {
+        return repository.getAll().stream()
+                .anyMatch(transaction ->
+                                !transaction.getIssueSolved() &&
+                                (transaction.getBeneficiaryFullName().equals(clientFullName) || transaction.getSenderFullName().equals(clientFullName)));
     }
 
     /**
