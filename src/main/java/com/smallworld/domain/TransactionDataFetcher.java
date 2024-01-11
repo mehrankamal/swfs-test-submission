@@ -114,8 +114,11 @@ public class TransactionDataFetcher {
     /**
      * Returns the 3 transactions with the highest amount sorted by amount descending
      */
-    public List<Object> getTop3TransactionsByAmount() {
-        throw new UnsupportedOperationException();
+    public List<Transaction> getTop3TransactionsByAmount() {
+        return repository.getAll().stream()
+                .sorted(Comparator.comparing(Transaction::sortingDescAmount))
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     /**

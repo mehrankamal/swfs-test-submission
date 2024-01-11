@@ -186,4 +186,28 @@ public class TransactionDataFetcherTests {
 
         Assert.assertTrue(topSender.equals("Mehran Kamal"));
     }
+
+    @Test
+    public void testGetTop3TransactionsByAmount() {
+        ArrayList<Transaction> expectedTopTransactions = new ArrayList<>();
+        expectedTopTransactions.add(new Transaction(6, BigDecimal.valueOf(4000), "Ben", 20, "Mehran", 20, null, true, null));
+        expectedTopTransactions.add(new Transaction(5, BigDecimal.valueOf(3000), "Alex", 20, "Mehran", 20, null, true, null));
+        expectedTopTransactions.add(new Transaction(4, BigDecimal.valueOf(5), "Hamza", 20, "Mehran", 20, null, true, null));
+
+
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Ali", 20, 32, true, "Legit transaction"));
+        transactions.add(new Transaction(3, BigDecimal.valueOf(3), "Mehran Kamal", 20, "Ali", 20, 35, false, "Looks like fraud"));
+        transactions.addAll(expectedTopTransactions);
+
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        List<Transaction> topTransactions = transactionDataFetcher.getTop3TransactionsByAmount();
+
+        Assert.assertEquals(3, topTransactions.size());
+        for (Integer i = 0; i<3; i++) {
+            Assert.assertEquals(expectedTopTransactions.get(i), topTransactions.get(i));
+        }
+    }
 }
