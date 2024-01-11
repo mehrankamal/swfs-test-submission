@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class TransactionDataFetcher {
 
@@ -17,20 +18,29 @@ public class TransactionDataFetcher {
         this.repository = repository;
     }
 
-    /**
-     * Returns the sum of the amounts of all transactions
-     */
-    public BigDecimal getTotalTransactionAmount() {
-        return repository.getAll().stream()
+    private BigDecimal sumTransactionAmount(Stream<Transaction> transactionStream) {
+        return transactionStream
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
+     * Returns the sum of the amounts of all transactions
+     */
+    public BigDecimal getTotalTransactionAmount() {
+        return sumTransactionAmount(repository.getAll().stream());
+    }
+
+    /**
      * Returns the sum of the amounts of all transactions sent by the specified client
      */
-    public double getTotalTransactionAmountSentBy(String senderFullName) {
-        throw new UnsupportedOperationException();
+    public BigDecimal getTotalTransactionAmountSentBy(String senderFullName) {
+        Stream<Transaction> senderTransactionsStream = repository
+                .getAll()
+                .stream()
+                .filter(transaction -> transaction.getSenderFullName().equals(senderFullName));
+
+        return sumTransactionAmount(senderTransactionsStream);
     }
 
     /**
