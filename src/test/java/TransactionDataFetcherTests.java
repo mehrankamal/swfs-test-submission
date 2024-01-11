@@ -128,7 +128,7 @@ public class TransactionDataFetcherTests {
 
         Mockito.when(transactionRepository.getAll()).thenReturn(allTransactions);
 
-        Map<String, ArrayList<Transaction>> result = transactionDataFetcher.getTransactionsByBeneficiaryName();
+        Map<String, List<Transaction>> result = transactionDataFetcher.getTransactionsByBeneficiaryName();
 
         Assert.assertEquals(2, result.size());
         Assert.assertTrue(result.containsKey("Mehran"));
