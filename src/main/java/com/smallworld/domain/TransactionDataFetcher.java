@@ -5,6 +5,7 @@ import com.smallworld.domain.entities.Transaction;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TransactionDataFetcher {
@@ -118,7 +119,10 @@ public class TransactionDataFetcher {
      * Returns a list of all solved issue messages
      */
     public List<String> getAllSolvedIssueMessages() {
-        throw new UnsupportedOperationException();
+        return repository.getAll().stream()
+                .filter(transaction -> transaction.getIssueId() != null && transaction.getIssueSolved())
+                .map(Transaction::getIssueMessage)
+                .collect(Collectors.toList());
     }
 
     /**

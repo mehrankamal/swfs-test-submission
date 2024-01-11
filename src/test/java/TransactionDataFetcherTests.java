@@ -156,6 +156,20 @@ public class TransactionDataFetcherTests {
 
         Assert.assertEquals(1, result.size());
         Assert.assertTrue(result.contains(unresolvedIssueId));
+    }
 
+    @Test
+    public void testGetAllSolvedIssueMessages() {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, BigDecimal.ONE, "Mehran Kamal", 20, "Ali", 20, 32, true, "Legit transaction"));
+        transactions.add(new Transaction(3, BigDecimal.TEN, "Mehran Kamal", 20, "Ali", 20, 35, false, "Looks like fraud"));
+        transactions.add(new Transaction(4, BigDecimal.ONE, "Hamza", 20, "Mehran", 20, null, true, null));
+        Mockito.when(transactionRepository.getAll()).thenReturn(transactions);
+
+        List<String> issueSolvedMessages = transactionDataFetcher.getAllSolvedIssueMessages();
+
+        Assert.assertEquals(1, issueSolvedMessages.size());
+        Assert.assertEquals("Legit transaction", issueSolvedMessages.get(0));
     }
 }
